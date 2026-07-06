@@ -11,9 +11,12 @@
 	<groupId>com.teamflow</groupId>
 	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
-	<url/>
+	<name>TeamFlow Backend</name>
+	<description>
+	Project Management System built with Spring Boot, JWT Authentication, MySQL and REST APIs.
+	</description>
+
+	<url>https://github.com/YOUR_GITHUB_USERNAME/TeamFlow</url>
 	<licenses>
 		<license/>
 	</licenses>
@@ -92,6 +95,11 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.12.7</version>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.8.9</version>
 		</dependency>
 	</dependencies>
 
