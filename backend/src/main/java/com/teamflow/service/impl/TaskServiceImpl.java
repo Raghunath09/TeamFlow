@@ -5,6 +5,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.security.access.AccessDeniedException;
+
+import com.teamflow.security.SecurityUtils;
+
 import com.teamflow.dto.CreateTaskRequest;
 import com.teamflow.dto.TaskResponse;
 import com.teamflow.entity.Project;
@@ -27,7 +31,11 @@ public class TaskServiceImpl implements TaskService {
     private final UserRepository userRepository;
 
     @Override
-    public TaskResponse createTask(CreateTaskRequest request) {
+        public TaskResponse createTask(CreateTaskRequest request) {
+
+        if (!SecurityUtils.isAdmin()) {
+                throw new AccessDeniedException("Only admins can create tasks.");
+        }
 
         Project project = projectRepository.findById(request.getProjectId())
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
@@ -47,7 +55,7 @@ public class TaskServiceImpl implements TaskService {
         Task savedTask = taskRepository.save(task);
 
         return mapToResponse(savedTask);
-    }
+        }
 
     @Override
     public List<TaskResponse> getAllTasks() {
@@ -68,37 +76,62 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskResponse updateTask(Long id, CreateTaskRequest request) {
+        public TaskResponse updateTask(Long id, CreateTaskRequest request) {
 
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Task not found"));
+
+        String email = SecurityUtils.getCurrentUserEmail();
+
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        boolean isAdmin = SecurityUtils.isAdmin();
+
+        boolean isAssignee =
+                task.getAssignee().getId().equals(currentUser.getId());
+
+        if (!isAdmin && !isAssignee) {
+                throw new AccessDeniedException(
+                        "You can update only your assigned tasks.");
+        }
 
         Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Project not found"));
 
         User assignee = userRepository.findById(request.getAssigneeId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
 
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setPriority(request.getPriority());
         task.setDueDate(request.getDueDate());
+
+        if (isAdmin) {
         task.setProject(project);
         task.setAssignee(assignee);
-
+}
         Task updatedTask = taskRepository.save(task);
 
         return mapToResponse(updatedTask);
-    }
+        }
 
     @Override
-    public void deleteTask(Long id) {
+        public void deleteTask(Long id) {
+
+        if (!SecurityUtils.isAdmin()) {
+                throw new AccessDeniedException("Only admins can delete tasks.");
+        }
 
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         taskRepository.delete(task);
-    }
+        }
 
     private TaskResponse mapToResponse(Task task) {
 

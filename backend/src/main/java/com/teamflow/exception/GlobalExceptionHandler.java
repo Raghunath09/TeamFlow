@@ -8,8 +8,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.teamflow.common.ApiResponse;
 
+import org.springframework.security.access.AccessDeniedException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+        @ExceptionHandler(AccessDeniedException.class)
+        public ResponseEntity<ApiResponse<Object>> handleAccessDeniedException(
+                AccessDeniedException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ApiResponse.failure(ex.getMessage()));
+        }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<Object>> handleRuntimeException(RuntimeException ex) {

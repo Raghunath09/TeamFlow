@@ -14,6 +14,10 @@ function Projects() {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const isAdmin = user?.role === "ADMIN";
+
     const [search, setSearch] = useState("");
 
     const [showModal, setShowModal] = useState(false);
@@ -170,6 +174,7 @@ function Projects() {
                     Projects
                 </h1>
 
+                {isAdmin && (
                 <button
                     onClick={() => {
 
@@ -190,6 +195,7 @@ function Projects() {
                 >
                     + New Project
                 </button>
+                )}
 
             </div>
 
@@ -278,25 +284,29 @@ function Projects() {
 
                                     <td className="p-4">
 
-                                        <div className="flex flex-wrap gap-2">
+                                            <div className="flex flex-wrap gap-2">
 
-                                            <button
-                                                onClick={() => editProject(project)}
-                                                className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition"
-                                            >
-                                                Edit
-                                            </button>
+                                                {isAdmin && (
+                                                    <>
+                                                        <button
+                                                            onClick={() => editProject(project)}
+                                                            className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition"
+                                                        >
+                                                            Edit
+                                                        </button>
 
-                                            <button
-                                                onClick={() => removeProject(project.id)}
-                                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition"
-                                            >
-                                                Delete
-                                            </button>
+                                                        <button
+                                                            onClick={() => removeProject(project.id)}
+                                                            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </>
+                                                )}
 
-                                        </div>
+                                            </div>
 
-                                    </td>
+                                        </td>
 
                                 </tr>
 

@@ -2,6 +2,9 @@ package com.teamflow.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.teamflow.dto.UpdateProfileRequest;
 import com.teamflow.dto.UserResponse;
 import com.teamflow.entity.User;
@@ -15,6 +18,21 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    @Override
+        public List<UserResponse> getAllUsers() {
+
+        return userRepository.findAll()
+                .stream()
+                .map(user -> UserResponse.builder()
+                        .id(user.getId())
+                        .fullName(user.getFullName())
+                        .email(user.getEmail())
+                        .role(user.getRole())
+                        .theme(user.getTheme())
+                        .build())
+                .collect(Collectors.toList());
+        }
 
     @Override
     public UserResponse getProfile(Long userId) {

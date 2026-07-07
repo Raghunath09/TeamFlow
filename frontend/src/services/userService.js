@@ -6,10 +6,14 @@ const getHeaders = () => ({
     },
 });
 
-export const getProfile = (userId) => {
-    return api.get(`/users/${userId}`, getHeaders());
+export const getProfile = (id) => {
+    return api.get(`/users/${id}`, getHeaders());
 };
 
-export const updateProfile = (userId, profile) => {
-    return api.put(`/users/${userId}`, profile, getHeaders());
+export const updateProfile = (id, data) => {
+    return api.put(`/users/${id}`, data, getHeaders());
+};
+
+export const getUsers = () => {
+    return api.get("/users", getHeaders());
 };

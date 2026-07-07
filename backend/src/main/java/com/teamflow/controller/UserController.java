@@ -1,5 +1,7 @@
 package com.teamflow.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,17 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping
+        public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Users fetched successfully",
+                        userService.getAllUsers()
+                )
+        );
+        }
 
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse<UserResponse>> getProfile(

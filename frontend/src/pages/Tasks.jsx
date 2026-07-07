@@ -14,6 +14,8 @@ import {
     deleteComment as deleteCommentService,
 } from "../services/commentService";
 
+import { getUsers } from "../services/userService";
+
 import {
     getAttachments,
     createAttachment,
@@ -28,7 +30,15 @@ function Tasks() {
 
     const [tasks, setTasks] = useState([]);
 
+    const [users, setUsers] = useState([]);
+
     const [loading, setLoading] = useState(true);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+
+    const isAdmin = user?.role === "ADMIN";
 
     const [search, setSearch] = useState("");
 
@@ -57,11 +67,12 @@ function Tasks() {
         priority: "MEDIUM",
         dueDate: "",
         projectId: 2,
-        assigneeId: 2,
+        assigneeId: "",
     });
 
     useEffect(() => {
         fetchTasks();
+        fetchUsers();
     }, []);
 
     const fetchTasks = async () => {
@@ -84,24 +95,40 @@ function Tasks() {
 
     };
 
+    const fetchUsers = async () => {
+
+        try {
+
+            const response = await getUsers();
+
+            setUsers(response.data.data);
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    };
+
     const editTask = (task) => {
 
-                setTask({
-                    title: task.title,
-                    description: task.description,
-                    priority: task.priority,
-                    dueDate: task.dueDate,
-                    projectId: task.projectId,
-                    assigneeId: task.assigneeId,
-                });
+        setTask({
+            title: task.title,
+            description: task.description,
+            priority: task.priority,
+            dueDate: task.dueDate,
+            projectId: task.projectId,
+            assigneeId: task.assigneeId,
+        });
 
-                setEditingId(task.id);
+        setEditingId(task.id);
 
-                setShowModal(true);
+        setShowModal(true);
 
-        };
+    };
 
-        const removeTask = async (id) => {
+    const removeTask = async (id) => {
 
         const confirmed = window.confirm(
             "Are you sure you want to delete this task?"
@@ -309,7 +336,7 @@ function Tasks() {
                 priority: "MEDIUM",
                 dueDate: "",
                 projectId: 2,
-                assigneeId: 2,
+                assigneeId: "",
             });
         } catch (error) {
 
@@ -349,28 +376,30 @@ function Tasks() {
                     Tasks
                 </h1>
 
-                <button
-                    onClick={() => {
+                {isAdmin && (
+                    <button
+                        onClick={() => {
 
-                        setEditingId(null);
+                            setEditingId(null);
 
-                        setTask({
-                            title: "",
-                            description: "",
-                            priority: "MEDIUM",
-                            dueDate: "",
-                            projectId: 2,
-                            assigneeId: 2,
-                        });
+                            setTask({
+                                title: "",
+                                description: "",
+                                priority: "MEDIUM",
+                                dueDate: "",
+                                projectId: 2,
+                                assigneeId: "",
+                            });
 
-                        setShowModal(true);
+                            setShowModal(true);
 
-                    }}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg transition duration-200"
-                >
-                    + New Task
-                </button>
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg transition duration-200"
+                    >
+                        + New Task
+                    </button>
 
+                )}
             </div>
 
             <div className="mb-5">
@@ -472,36 +501,40 @@ function Tasks() {
                                     </td>
 
                                     <td className="p-4">
-                                    <div className="flex flex-wrap gap-2">
+                                        <div className="flex flex-wrap gap-2">
 
-                                        <button
-                                            onClick={() => openComments(task)}
-                                            className="bg-indigo-600 text-white px-3 py-1 rounded"
-                                        >
-                                            Comments
-                                        </button>
+                                            <button
+                                                onClick={() => openComments(task)}
+                                                className="bg-indigo-600 text-white px-3 py-1 rounded"
+                                            >
+                                                Comments
+                                            </button>
 
-                                        <button
-                                            onClick={() => openAttachments(task)}
-                                            className="bg-gray-700 text-white px-3 py-1 rounded"
-                                        >
-                                            Attachments
-                                        </button>
+                                            <button
+                                                onClick={() => openAttachments(task)}
+                                                className="bg-gray-700 text-white px-3 py-1 rounded"
+                                            >
+                                                Attachments
+                                            </button>
 
-                                        <button
-                                            onClick={() => editTask(task)}
-                                            className="bg-yellow-500 text-white px-3 py-1 rounded"
-                                        >
-                                            Edit
-                                        </button>
+                                            {(isAdmin || currentUser?.id === task.assigneeId) && (
+                                                <button
+                                                    onClick={() => editTask(task)}
+                                                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition"
+                                                >
+                                                    Edit
+                                                </button>
+                                            )}
 
-                                        <button
-                                            onClick={() => removeTask(task.id)}
-                                            className="bg-red-600 text-white px-3 py-1 rounded"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
+                                            {isAdmin && (
+                                                <button
+                                                    onClick={() => removeTask(task.id)}
+                                                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition"
+                                                >
+                                                    Delete
+                                                </button>
+                                            )}
+                                        </div>
 
                                     </td>
 
@@ -517,7 +550,7 @@ function Tasks() {
 
             </div>
 
-                        {showModal && (
+            {showModal && (
 
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
 
@@ -555,6 +588,8 @@ function Tasks() {
                             }
                         />
 
+
+                        {isAdmin && (
                         <select
                             className="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-black dark:text-white p-3 rounded mb-4"
                             value={task.priority}
@@ -569,6 +604,7 @@ function Tasks() {
                             <option value="MEDIUM">MEDIUM</option>
                             <option value="HIGH">HIGH</option>
                         </select>
+                        )}
 
                         <input
                             type="date"
@@ -581,6 +617,37 @@ function Tasks() {
                                 })
                             }
                         />
+
+                        {isAdmin && (
+                        <select
+                            className="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-black dark:text-white p-3 rounded mb-4"
+                            value={task.assigneeId}
+                            onChange={(e) =>
+                                setTask({
+                                    ...task,
+                                    assigneeId: Number(e.target.value),
+                                })
+                            }
+                        >
+                            
+
+                            <option value="">Select Assignee</option>
+
+                            {users
+                                .filter((user) => user.role === "MEMBER")
+                                .map((user) => (
+
+                                    <option
+                                        key={user.id}
+                                        value={user.id}
+                                    >
+                                        {user.fullName} ({user.role})
+                                    </option>
+
+                                ))}
+
+                        </select>
+                        )}
 
                         <div className="flex justify-end gap-3">
 
@@ -606,7 +673,7 @@ function Tasks() {
 
             )}
 
-                        {showComments && (
+            {showComments && (
 
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
 
@@ -707,7 +774,7 @@ function Tasks() {
 
             )}
 
-                        {showAttachments && (
+            {showAttachments && (
 
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
 

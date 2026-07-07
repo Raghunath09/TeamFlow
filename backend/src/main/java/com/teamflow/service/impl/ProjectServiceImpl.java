@@ -3,6 +3,10 @@ package com.teamflow.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.access.AccessDeniedException;
+
+import com.teamflow.security.SecurityUtils;
+
 import org.springframework.stereotype.Service;
 
 import com.teamflow.dto.CreateProjectRequest;
@@ -21,6 +25,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse createProject(CreateProjectRequest request) {
+
+        if (!SecurityUtils.isAdmin()) {
+            throw new AccessDeniedException("Only admins can create projects.");
+        }
 
         Project project = Project.builder()
                 .projectName(request.getProjectName())
