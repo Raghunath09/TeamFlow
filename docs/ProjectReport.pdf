@@ -1,0 +1,109 @@
+TeamFlow Project Report
+1. Project Overview
+
+TeamFlow is a full-stack Project Management and Team Collaboration System developed to help software teams efficiently manage projects, tasks, comments, attachments, notifications, and user profiles from a single platform.
+
+The application follows a secure client-server architecture using Spring Boot for the backend, React for the frontend, and MySQL for data storage. Authentication is implemented using JWT, while role-based authorization ensures secure access to project resources.
+
+2. System Architecture
+
+The application follows a three-tier architecture.
+
+Presentation Layer
+
+React
+Tailwind CSS
+Axios
+React Router
+
+Business Layer
+
+Spring Boot
+Spring Security
+JWT Authentication
+REST APIs
+
+Data Layer
+
+MySQL
+Spring Data JPA
+Hibernate
+
+This architecture improves maintainability, scalability, and separation of concerns.
+
+3. Database Design
+
+The database consists of the following primary entities:
+
+Users
+Projects
+Tasks
+Comments
+Attachments
+Notifications
+Project Members
+Activity Logs
+Task Relations
+
+Relationships are implemented using JPA with proper foreign key constraints.
+
+4. Security
+
+Security features include:
+
+JWT Authentication
+Password Encryption using BCrypt
+Role-Based Authorization
+Protected REST APIs
+Secure Request Validation
+
+Two user roles are supported:
+
+ADMIN
+MEMBER
+
+Administrators can manage projects and tasks, while members have restricted access
+
+5. Major Features
+User Registration and Login
+Dashboard Analytics
+Project Management
+Task Management
+Comments
+Attachments
+Notifications
+Profile Management
+Dark and Light Theme
+Swagger API Documentation
+Responsive User Interface
+
+6. Design Decisions
+
+The following design decisions were made during implementation:
+
+Spring Boot was selected for rapid backend development.
+React was used to create a responsive user interface.
+MySQL provides reliable relational data storage.
+JWT enables stateless authentication.
+REST APIs separate frontend and backend responsibilities.
+Layered Architecture improves maintainability.
+Role-Based Authorization secures sensitive operations.
+
+7. Future Improvements
+
+Future enhancements include:
+
+Email Notifications
+Kanban Board
+Calendar View
+Cloud File Storage
+Team Chat
+Activity Timeline
+Docker Deployment
+CI/CD Pipeline
+Cloud Hosting
+Mobile Application
+
+8. Conclusion
+
+TeamFlow successfully demonstrates the implementation of a secure, scalable, and modern project management platform using Spring Boot, React, and MySQL. The project follows software engineering best practices and provides a strong foundation for future enhancements.
