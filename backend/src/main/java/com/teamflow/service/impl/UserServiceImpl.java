@@ -9,9 +9,12 @@ import com.teamflow.dto.UpdateProfileRequest;
 import com.teamflow.dto.UserResponse;
 import com.teamflow.entity.User;
 import com.teamflow.repository.UserRepository;
+import com.teamflow.security.SecurityUtils;
 import com.teamflow.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.access.AccessDeniedException;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
         public List<UserResponse> getAllUsers() {
+
+        if (!SecurityUtils.isAdmin()) {
+                throw new AccessDeniedException("Only admins can view all users.");
+        }
 
         return userRepository.findAll()
                 .stream()
