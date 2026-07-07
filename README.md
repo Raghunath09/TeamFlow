@@ -280,6 +280,20 @@ TeamFlow uses:
 
 ---
 
+# 👥 Demo Credentials
+
+## Admin
+
+Email: admin@gmail.com
+
+Password: root123
+
+## Member
+
+Email: testuser@gmail.com
+
+Password: root123
+
 # 📈 Future Enhancements
 
 Some ideas for future versions:
@@ -357,3 +371,91 @@ Special thanks to:
 - Swagger OpenAPI
 
 for providing the amazing open-source technologies used in this project.
+
+---
+
+# 🏗 System Architecture
+
+The following diagram illustrates the high-level architecture of TeamFlow.
+
+<p align="center">
+  <img src="diagrams/architecture.png" alt="Architecture Diagram" width="900">
+</p>
+
+---
+
+# 🗄 Entity Relationship Diagram
+
+The ER Diagram represents the relationship between the database entities used in TeamFlow.
+
+<p align="center">
+  <img src="diagrams/er-diagram.png" alt="ER Diagram" width="900">
+</p>
+
+---
+
+# 🔄 Application Workflow
+
+The workflow below demonstrates the user journey from authentication to project and task management.
+
+<p align="center">
+  <img src="diagrams/workflow.png" alt="Workflow Diagram" width="900">
+</p>
+
+---
+
+# 📷 Application Screenshots
+
+## Login
+
+<p align="center">
+  <img src="demo/login.png" width="900">
+</p>
+
+---
+
+## Register
+
+<p align="center">
+  <img src="demo/register.png" width="900">
+</p>
+
+---
+
+## Dashboard
+
+<p align="center">
+  <img src="demo/dashboard.png" width="900">
+</p>
+
+---
+
+## Projects
+
+<p align="center">
+  <img src="demo/projects.png" width="900">
+</p>
+
+---
+
+## Tasks
+
+<p align="center">
+  <img src="demo/tasks.png" width="900">
+</p>
+
+---
+
+## Profile
+
+<p align="center">
+  <img src="demo/profile.png" width="900">
+</p>
+
+---
+
+## Dark Mode
+
+<p align="center">
+  <img src="demo/dark-mode.png" width="900">
+</p>
