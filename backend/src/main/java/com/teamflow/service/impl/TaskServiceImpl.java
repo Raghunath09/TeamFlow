@@ -3,11 +3,8 @@ package com.teamflow.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Service;
-
 import org.springframework.security.access.AccessDeniedException;
-
-import com.teamflow.security.SecurityUtils;
+import org.springframework.stereotype.Service;
 
 import com.teamflow.dto.CreateTaskRequest;
 import com.teamflow.dto.TaskResponse;
@@ -18,6 +15,7 @@ import com.teamflow.exception.ResourceNotFoundException;
 import com.teamflow.repository.ProjectRepository;
 import com.teamflow.repository.TaskRepository;
 import com.teamflow.repository.UserRepository;
+import com.teamflow.security.SecurityUtils;
 import com.teamflow.service.TaskService;
 
 import lombok.RequiredArgsConstructor;
@@ -109,6 +107,7 @@ public class TaskServiceImpl implements TaskService {
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setPriority(request.getPriority());
+        task.setStatus(request.getStatus());
         task.setDueDate(request.getDueDate());
 
         if (isAdmin) {

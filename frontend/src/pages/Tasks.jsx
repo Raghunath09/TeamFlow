@@ -65,6 +65,7 @@ function Tasks() {
         title: "",
         description: "",
         priority: "MEDIUM",
+        status: "TODO",
         dueDate: "",
         projectId: 2,
         assigneeId: "",
@@ -117,6 +118,7 @@ function Tasks() {
             title: task.title,
             description: task.description,
             priority: task.priority,
+            status: task.status,
             dueDate: task.dueDate,
             projectId: task.projectId,
             assigneeId: task.assigneeId,
@@ -266,7 +268,7 @@ function Tasks() {
             await addComment({
                 content: commentText,
                 taskId: selectedTask.id,
-                userId: 2,
+                userId: currentUser.id,
             });
 
             const response = await getComments(selectedTask.id);
@@ -334,10 +336,12 @@ function Tasks() {
                 title: "",
                 description: "",
                 priority: "MEDIUM",
+                status: "TODO",
                 dueDate: "",
                 projectId: 2,
                 assigneeId: "",
             });
+
         } catch (error) {
 
             console.error(error);
@@ -386,6 +390,7 @@ function Tasks() {
                                 title: "",
                                 description: "",
                                 priority: "MEDIUM",
+                                status: "TODO",
                                 dueDate: "",
                                 projectId: 2,
                                 assigneeId: "",
@@ -407,9 +412,15 @@ function Tasks() {
                 <input
                     type="text"
                     placeholder="🔍 Search Tasks..."
+                    readOnly={!isAdmin}
+                    className="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-black dark:text-white p-3 rounded mb-4"
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="w-full md:w-96 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-black dark:text-white p-3 rounded-lg"
+                    onChange={(e) =>
+                        setTask({
+                            ...task,
+                            title: e.target.value,
+                        })
+                    }
                 />
 
             </div>
@@ -565,17 +576,19 @@ function Tasks() {
                         <input
                             type="text"
                             placeholder="Task Title"
+                            readOnly={!isAdmin}
                             className="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-black dark:text-white p-3 rounded mb-4"
                             value={task.title}
-                            onChange={(e) =>
+                            onChange={(e)=>
                                 setTask({
                                     ...task,
-                                    title: e.target.value,
+                                    title:e.target.value,
                                 })
                             }
                         />
 
                         <textarea
+                            readOnly={!isAdmin}
                             placeholder="Description"
                             rows="4"
                             className="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-black dark:text-white p-3 rounded mb-4"
@@ -587,6 +600,21 @@ function Tasks() {
                                 })
                             }
                         />
+
+                        <select
+                            className="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-black dark:text-white p-3 rounded mb-4"
+                            value={task.status}
+                            onChange={(e) =>
+                                setTask({
+                                    ...task,
+                                    status: e.target.value,
+                                })
+                            }
+                        >
+                            <option value="TODO">TODO</option>
+                            <option value="IN_PROGRESS">IN PROGRESS</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                        </select>
 
 
                         {isAdmin && (
@@ -607,6 +635,7 @@ function Tasks() {
                         )}
 
                         <input
+                            disabled={!isAdmin}
                             type="date"
                             className="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-black dark:text-white p-3 rounded mb-4"
                             value={task.dueDate}

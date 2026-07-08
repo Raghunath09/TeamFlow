@@ -3,6 +3,8 @@ package com.teamflow.dto;
 import java.time.LocalDate;
 
 import com.teamflow.enums.Priority;
+import com.teamflow.enums.TaskStatus;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -18,6 +20,8 @@ public class CreateTaskRequest {
     private Priority priority;
 
     private LocalDate dueDate;
+    
+    private TaskStatus status;
 
     @NotNull
     private Long projectId;

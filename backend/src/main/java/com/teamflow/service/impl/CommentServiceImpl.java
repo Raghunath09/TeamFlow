@@ -2,17 +2,18 @@ package com.teamflow.service.impl;
 
 import java.util.List;
 
-import com.teamflow.entity.Comment;
-import com.teamflow.entity.Task;
-import com.teamflow.entity.User;
-
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.teamflow.dto.CommentResponse;
 import com.teamflow.dto.CreateCommentRequest;
+import com.teamflow.entity.Comment;
+import com.teamflow.entity.Task;
+import com.teamflow.entity.User;
 import com.teamflow.repository.CommentRepository;
 import com.teamflow.repository.TaskRepository;
 import com.teamflow.repository.UserRepository;
+import com.teamflow.security.SecurityUtils;
 import com.teamflow.service.CommentService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentResponse addComment(CreateCommentRequest request) {
 
-        User user = userRepository.findById(request.getUserId())
+        String email = SecurityUtils.getCurrentUserEmail();
+
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Task task = taskRepository.findById(request.getTaskId())
@@ -71,11 +74,26 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long commentId) {
+        public void deleteComment(Long commentId) {
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
 
+        String email = SecurityUtils.getCurrentUserEmail();
+
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean isAdmin = SecurityUtils.isAdmin();
+
+        boolean isOwner =
+                comment.getUser().getId().equals(currentUser.getId());
+
+        if (!isAdmin && !isOwner) {
+                throw new AccessDeniedException(
+                        "You can delete only your own comments.");
+        }
+
         commentRepository.delete(comment);
-    }
+        }
 }
